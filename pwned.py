@@ -13,14 +13,17 @@ class Cor:
     RESET = '\033[0m'
 
 # --- Banco de Dados ---
-# Dicionário baseado em relatórios de vazamentos do NordVPN.
+# Dicionário baseado em relatórios de vazamentos do NordPass.
 
-# Top 20 senhas mais usadas no Brasil
+# Top senhas mais usadas no Brasil
 senhas_brasil = [
     "admin", "123456", "12345678", "123456789", "12345",
     "lucas123", "flamengo", "brasil", "102030", "12q3456",
     "fera@123", "1234567", "142536", "********", "1234567890", 
-    "senha", "password", "qwerty", "111111", "123123"
+    "senha", "password", "qwerty", "111111", "123123", "iguatemi",
+    "1234", "123456a", "12345678910", "12345678901", "123456789012",
+    "corinthians", "palmeiras", "vasco", "gremio", "santos", "fluminense", "botafogo",
+    "cruzeiro", "atletico", "bahia", "sport"
 ]
 
 # Top 20 senhas mais usadas Globalmente
@@ -41,8 +44,8 @@ def gerar_banco_servidor():
         hash_sha1 = hashlib.sha1(s.encode('utf-8')).hexdigest().upper()
         banco.append(hash_sha1)
     
-    # Adicionando alguns hashes aleatórios para fazer volume visual
-    banco.append("5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8")
+    # Hash fictício com o mesmo prefixo de "password" (5BAA6), para mostrar
+    # que o servidor devolve vários sufixos para um mesmo prefixo
     banco.append("5BAA6AB329381920391029384910293849102938")
     return sorted(banco)
 
@@ -62,20 +65,19 @@ def animacao_loading(texto, segundos):
 
 def mostrar_dicionarios_senhas():
     limpar_tela()
-    print(f"{Cor.NEGRITO}{Cor.VERMELHO}=== DICIONÁRIOS DE VAZAMENTOS (TEXTO CLARO) ==={Cor.RESET}\n")
+    print(f"{Cor.NEGRITO}{Cor.VERMELHO}=== DICIONÁRIOS DE VAZAMENTOS ==={Cor.RESET}\n")
     print("Estas são as senhas coletadas de vazamentos reais (Data Breaches).")
     print("Elas costumam circular na internet desta forma, desprotegidas:\n")
     
     print(f"{Cor.NEGRITO}{Cor.VERDE}Top Senhas - BRASIL:{Cor.RESET}")
-    # Mostra as primeiras 10 para não poluir muito a tela
-    for i, s in enumerate(senhas_brasil[:10]):
+    for i, s in enumerate(senhas_brasil[:20]):
         print(f" {i+1:02d}. {s}")
-    print(" ... (e muitas outras)")
-    
+    print(" ...")
     print(f"\n{Cor.NEGRITO}{Cor.AZUL}Top Senhas - GLOBAL:{Cor.RESET}")
-    for i, s in enumerate(senhas_global[:10]):
+    for i, s in enumerate(senhas_global[:20]):
         print(f" {i+1:02d}. {s}")
-    print(" ... (e muitas outras)\n")
+    print(" ...")
+    print()
     
     input(f"{Cor.NEGRITO}Pressione ENTER para voltar ao menu...{Cor.RESET}")
 
@@ -85,23 +87,23 @@ def mostrar_banco_dados():
     print("O servidor processou o dicionário e agora armazena apenas os Hashes SHA-1.")
     print("Se um hacker invadir o servidor agora, é apenas isso que ele vai ver:\n")
     
-    for i, h in enumerate(BANCO_SERVIDOR[:10]):
+    for i, h in enumerate(BANCO_SERVIDOR[:20]):
         print(f"Registro {i+1:02d}: {Cor.AMARELO}{h}{Cor.RESET}")
-    print(f"Registro ...: {Cor.AMARELO}(e mais bilhões de hashes...){Cor.RESET}\n")
+    print("...\n")
     
     input(f"{Cor.NEGRITO}Pressione ENTER para voltar ao menu...{Cor.RESET}")
 
 def verificar_senha():
     limpar_tela()
-    print(f"{Cor.NEGRITO}{Cor.MAGENTA}=== TESTE DE VAZAMENTO (K-ANONYMITY) ==={Cor.RESET}\n")
+    print(f"{Cor.NEGRITO}{Cor.MAGENTA}=== TESTE DE VAZAMENTO ==={Cor.RESET}\n")
     senha_teste = input("Digite a senha que deseja testar: ")
     
-    print(f"\n{Cor.NEGRITO}[CLIENTE]{Cor.RESET} Gerando hash SHA-1 localmente (na sua máquina)...")
+    print(f"\n{Cor.NEGRITO}[CLIENTE]{Cor.RESET} Gerando hash SHA-1 localmente...")
     time.sleep(1)
     hash_teste = hashlib.sha1(senha_teste.encode('utf-8')).hexdigest().upper()
     print(f"Hash gerado: {Cor.AMARELO}{hash_teste}{Cor.RESET}\n")
     
-    print(f"{Cor.NEGRITO}[CLIENTE]{Cor.RESET} Separando o hash (K-Anonymity)...")
+    print(f"{Cor.NEGRITO}[CLIENTE]{Cor.RESET} Separando o hash...")
     time.sleep(1)
     prefixo = hash_teste[:5]
     sufixo_teste = hash_teste[5:]
@@ -143,11 +145,11 @@ def menu():
     while True:
         limpar_tela()
         print(f"{Cor.NEGRITO}{Cor.AZUL}========================================={Cor.RESET}")
-        print(f"{Cor.NEGRITO}{Cor.AZUL}     SIMULADOR - HAVE I BEEN PWNED       {Cor.RESET}")
+        print(f"{Cor.NEGRITO}{Cor.AZUL}     SIMULADOR - HAVE I BEEN PWNED?       {Cor.RESET}")
         print(f"{Cor.NEGRITO}{Cor.AZUL}========================================={Cor.RESET}")
-        print("1. Ver Dicionários de Senhas (Texto Claro)")
-        print("2. Ver Banco de Dados (Hashes no Servidor)")
-        print("3. Testar uma Senha (K-Anonymity na prática)")
+        print("1. Ver Dicionários de Senhas")
+        print("2. Ver Banco de Dados")
+        print("3. Testar uma Senha")
         print("4. Sair")
         print(f"{Cor.AZUL}========================================={Cor.RESET}")
         
